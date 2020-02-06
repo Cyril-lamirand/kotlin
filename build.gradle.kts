@@ -389,6 +389,12 @@ allprojects {
         // https://youtrack.jetbrains.com/issue/KT-37089
     }
 
+    normalization {
+        runtimeClasspath {
+            ignore("META-INF/MANIFEST.MF")
+        }
+    }
+
     tasks {
         register("listArchives") { listConfigurationContents("archives") }
 
