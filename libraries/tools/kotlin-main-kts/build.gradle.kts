@@ -73,9 +73,7 @@ val proguard by task<CacheableProguardTask> {
     injars(mapOf("filter" to "!META-INF/versions/**"), relocatedJar.get().outputs.files)
 
     val outputJar = fileFrom(buildDir, "libs", "$jarBaseName-$version-after-proguard.jar")
-
     outjars(outputJar)
-    outputs.file(outputJar)
 
     jdkHome = File(JDK_18)
     libraryjars(mapOf("filter" to "!META-INF/versions/**"), proguardLibraryJars)
@@ -93,7 +91,7 @@ val resultJar by task<Jar> {
     dependsOn(pack)
     setupPublicJar(jarBaseName)
     from {
-        zipTree(pack.get().outputs.files.singleFile)
+        zipTree(pack.get().singleOutputFile())
     }
 }
 
