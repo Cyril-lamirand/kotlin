@@ -251,7 +251,7 @@ val proguard by task<CacheableProguardTask> {
     val outputJar = fileFrom(buildDir, "libs", "$compilerBaseName-after-proguard.jar")
     outjars(outputJar)
 
-    val packedCompilerFile = packCompiler.get().outputs.files.singleFile
+    val packedCompilerFile = provider { packCompiler.get().outputs.files.singleFile }
     inputs.files(packedCompilerFile)
         .withNormalizer(ClasspathNormalizer::class.java)
 
@@ -269,7 +269,7 @@ val proguard by task<CacheableProguardTask> {
 
     // This properties are used by proguard config compiler.pro
     doFirst {
-        System.setProperty("kotlin-compiler-jar-before-shrink", packedCompilerFile.canonicalPath)
+        System.setProperty("kotlin-compiler-jar-before-shrink", packedCompilerFile.get().canonicalPath)
     }
 }
 
