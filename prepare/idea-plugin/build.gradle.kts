@@ -75,6 +75,7 @@ val projectsToShadow by extra(listOf(
         ":compiler:serialization",
         ":compiler:util",
         ":core:util.runtime",
+        ":core:compiler.version",
         ":plugins:lint",
         ":plugins:uast-kotlin",
         ":plugins:uast-kotlin-idea",

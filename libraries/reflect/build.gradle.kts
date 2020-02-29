@@ -38,6 +38,7 @@ embedded.isTransitive = false
 
 configurations.getByName("compileOnly").extendsFrom(embedded)
 val mainJar by configurations.creating
+val compilerVersion by configurations.creating
 
 dependencies {
     compile(kotlinStdlib())
@@ -56,7 +57,7 @@ dependencies {
     embedded(project(":core:util.runtime"))
     embedded("javax.inject:javax.inject:1")
     embedded(protobufLite())
-
+    compilerVersion(project(":core:compiler.version"))
     compileOnly("org.jetbrains:annotations:13.0")
 }
 
@@ -202,21 +203,34 @@ val intermediate = when {
     
 val result by task<Jar> {
     dependsOn(intermediate)
+    dependsOn(compilerVersion)
+
     from {
         zipTree(intermediate.get().singleOutputFile())
     }
+    from {
+        compilerVersion.map(::zipTree)
+    }
+
     callGroovy("manifestAttributes", manifest, project, "Main")
 }
 
 val modularJar by task<Jar> {
     dependsOn(intermediate)
+    dependsOn(compilerVersion)
+
     archiveClassifier.set("modular")
+
     from {
         zipTree(intermediate.get().singleOutputFile())
     }
     from(zipTree(provider { reflectShadowJar.get().archiveFile.get().asFile })) {
         include("META-INF/versions/**")
     }
+    from {
+        compilerVersion.map(::zipTree)
+    }
+
     callGroovy("manifestAttributes", manifest, project, "Main", true)
 }
 
